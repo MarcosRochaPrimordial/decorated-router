@@ -1,5 +1,5 @@
 {
-  "name": "router-decorater",
+  "name": "decorated-router",
   "version": "1.0.0",
   "description": "This is an easy mode to rest your application with decorators and typescript",
   "main": "lib/main.js",
