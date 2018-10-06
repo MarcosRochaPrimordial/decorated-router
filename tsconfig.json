@@ -1,6 +1,6 @@
 {
     "compilerOptions": {
-        "target": "es5",
+        "target": "es2015",
         "experimentalDecorators": true,
         "module": "commonjs",
         "declaration": true,
@@ -11,6 +11,6 @@
     ],
     "exclude": [
         "node_modules",
-        "**/__tests__/*"
+        "test"
     ]
 }

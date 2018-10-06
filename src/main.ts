@@ -1,11 +1,10 @@
-import { Response, Request, NextFunction, Express, Router } from 'express';
+import { Response, Request, NextFunction, Express } from 'express';
 import * as express from 'express';
 import * as bodyParser from 'body-parser';
 
 class ServerService {
     private static _instance: ServerService = null;
     private server: Express = null;
-    private router: Router = null;
     private paths: Array<{path: string, method: string, function: Function}> = [];
 
     private constructor() {
@@ -28,14 +27,6 @@ class ServerService {
         this.server = server;
     }
 
-    public getRouter(): Router {
-        return this.router;
-    }
-
-    public setRouter(router: Router) {
-        this.router = router;
-    }
-
     public getPaths(): Array<{path: string, method: string, function: Function}> {
         return this.paths;
     }
@@ -53,7 +44,7 @@ class Server {
     constructor() { }
 
     public initiateServer() {
-        const door = 3000;
+        const door = 3000 || process.argv[2];
         const server: Express = express();
         server.use(bodyParser.urlencoded({ extended: true }));
         server.use(bodyParser.json());
@@ -74,43 +65,43 @@ class Server {
 let server = new Server();
 server.initiateServer();
 
-export function Controller(url: string = "/", auth: any = null, cors: string = "") {
+function Controller({url, auth = null, cors = null}) {
     return function (target: Object) {
         let serverService = ServerService.getInstance();
-        serverService.setRouter(express.Router());
+        let router = express.Router();
 
-        if(cors != "") {
+        if(cors != null) {
             serverService.getServer().use(url, (req: Request, res: Response, next: NextFunction) => {
                 res.header('Access-Control-Allow-Origin', cors);
                 next();
             });
         }
 
-        serverService.getServer().use(url, serverService.getRouter());
+        serverService.getServer().use(url, router);
 
         if (auth != null) {
-            serverService.getRouter().use(auth);
+            router.use(auth);
         }
 
         serverService.getPaths().forEach((path) => {
             switch (path.method) {
                 case 'GET':
-                    serverService.getRouter().route(path.path).get((req: Request, res: Response) => {
+                    router.route(path.path).get((req: Request, res: Response) => {
                         path.function.call(this, req, res);
                     });
                     break;
                 case 'POST':
-                    serverService.getRouter().route(path.path).post((req: Request, res: Response) => {
+                    router.route(path.path).post((req: Request, res: Response) => {
                         path.function.call(this, req, res);
                     });
                     break;
                 case 'PUT':
-                    serverService.getRouter().route(path.path).put((req: Request, res: Response) => {
+                    router.route(path.path).put((req: Request, res: Response) => {
                         path.function.call(this, req, res);
                     });
                     break;
                 case 'DELETE':
-                    serverService.getRouter().route(path.path).delete((req: Request, res: Response) => {
+                    router.route(path.path).delete((req: Request, res: Response) => {
                         path.function.call(this, req, res);
                     });
                     break;
@@ -118,11 +109,10 @@ export function Controller(url: string = "/", auth: any = null, cors: string = "
         });
 
         serverService.renewPaths();
-        serverService.setRouter(null);
     }
 }
 
-export function Get(path: string = "") {
+function Get(path: string = "") {
     return function (target: Object, propertyKey: string, descriptor: TypedPropertyDescriptor<any>) {
         let serverService = ServerService.getInstance();
         serverService.setPaths({
@@ -133,7 +123,7 @@ export function Get(path: string = "") {
     }
 }
 
-export function Post(path: string = "") {
+function Post(path: string = "") {
     return function (target: Object, propertyKey: string, descriptor: TypedPropertyDescriptor<any>) {
         let serverService = ServerService.getInstance();
         serverService.setPaths({
@@ -144,7 +134,7 @@ export function Post(path: string = "") {
     }
 }
 
-export function Put(path: string = "") {
+function Put(path: string = "") {
     return function (target: Object, propertyKey: string, descriptor: TypedPropertyDescriptor<any>) {
         let serverService = ServerService.getInstance();
         serverService.setPaths({
@@ -155,7 +145,7 @@ export function Put(path: string = "") {
     }
 }
 
-export function Delete(path: string = "") {
+function Delete(path: string = "") {
     return function (target: Object, propertyKey: string, descriptor: TypedPropertyDescriptor<any>) {
         let serverService = ServerService.getInstance();
         serverService.setPaths({
@@ -165,3 +155,5 @@ export function Delete(path: string = "") {
         });
     }
 }
+
+export = { Delete, Put, Post, Get, Controller };
