@@ -8,8 +8,11 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 Object.defineProperty(exports, "__esModule", { value: true });
 const main_1 = require("./../lib/main");
 let Usuario = class Usuario {
+    constructor() {
+        this.id = 12;
+    }
     metodo(req, res) {
-        res.json({ teste: req.params.id });
+        res.json({ teste: this.id });
     }
 };
 __decorate([

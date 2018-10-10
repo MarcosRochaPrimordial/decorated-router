@@ -5,7 +5,7 @@ import * as bodyParser from 'body-parser';
 class ServerService {
     private static _instance: ServerService = null;
     private server: Express = null;
-    private paths: Array<{path: string, method: string, function: Function}> = [];
+    private paths: Array<{path: string, method: string, key: string}> = [];
 
     private constructor() {
         ServerService._instance = this;
@@ -27,11 +27,11 @@ class ServerService {
         this.server = server;
     }
 
-    public getPaths(): Array<{path: string, method: string, function: Function}> {
+    public getPaths(): Array<{path: string, method: string, key: string}> {
         return this.paths;
     }
 
-    public setPaths(paths: {path: string, method: string, function: Function}) {
+    public setPaths(paths: {path: string, method: string, key: string}) {
         this.paths.push(paths);
     }
 
@@ -66,7 +66,7 @@ let server = new Server();
 server.initiateServer();
 
 function Controller({url, auth = null, cors = null}) {
-    return function (target: Object) {
+    return function (target: any) {
         let serverService = ServerService.getInstance();
         let router = express.Router();
 
@@ -87,22 +87,26 @@ function Controller({url, auth = null, cors = null}) {
             switch (path.method) {
                 case 'GET':
                     router.route(path.path).get((req: Request, res: Response) => {
-                        path.function.call(this, req, res);
+                        let b = new target();
+                        b[path.key](req, res);
                     });
                     break;
                 case 'POST':
                     router.route(path.path).post((req: Request, res: Response) => {
-                        path.function.call(this, req, res);
+                        let b = new target();
+                        b[path.key](req, res);
                     });
                     break;
                 case 'PUT':
                     router.route(path.path).put((req: Request, res: Response) => {
-                        path.function.call(this, req, res);
+                        let b = new target();
+                        b[path.key](req, res);
                     });
                     break;
                 case 'DELETE':
                     router.route(path.path).delete((req: Request, res: Response) => {
-                        path.function.call(this, req, res);
+                        let b = new target();
+                        b[path.key](req, res);
                     });
                     break;
             }
@@ -113,46 +117,54 @@ function Controller({url, auth = null, cors = null}) {
 }
 
 function Get(path: string = "") {
-    return function (target: Object, propertyKey: string, descriptor: TypedPropertyDescriptor<any>) {
+    return function (target: any, propertyKey: string, descriptor: TypedPropertyDescriptor<any>) {
         let serverService = ServerService.getInstance();
         serverService.setPaths({
             path: path,
             method: 'GET',
-            function: descriptor.value
+            key: propertyKey
         });
+
+        return descriptor.value;
     }
 }
 
 function Post(path: string = "") {
-    return function (target: Object, propertyKey: string, descriptor: TypedPropertyDescriptor<any>) {
+    return function (target: any, propertyKey: string, descriptor: TypedPropertyDescriptor<any>) {
         let serverService = ServerService.getInstance();
         serverService.setPaths({
             path: path,
             method: 'POST',
-            function: descriptor.value
+            key: propertyKey
         });
+
+        return descriptor.value;
     }
 }
 
 function Put(path: string = "") {
-    return function (target: Object, propertyKey: string, descriptor: TypedPropertyDescriptor<any>) {
+    return function (target: any, propertyKey: string, descriptor: TypedPropertyDescriptor<any>) {
         let serverService = ServerService.getInstance();
         serverService.setPaths({
             path: path,
             method: 'PUT',
-            function: descriptor.value
+            key: propertyKey
         });
+
+        return descriptor.value;
     }
 }
 
 function Delete(path: string = "") {
-    return function (target: Object, propertyKey: string, descriptor: TypedPropertyDescriptor<any>) {
+    return function (target: any, propertyKey: string, descriptor: TypedPropertyDescriptor<any>) {
         let serverService = ServerService.getInstance();
         serverService.setPaths({
             path: path,
             method: 'DELETE',
-            function: descriptor.value
+            key: propertyKey
         });
+
+        return descriptor.value;
     }
 }
 

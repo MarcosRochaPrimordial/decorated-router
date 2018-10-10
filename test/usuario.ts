@@ -4,9 +4,11 @@ import { Authentication } from './Authentication';
 
 @Controller({url: '/usuario', cors: "*"})
 export class Usuario {
+
+    public id: number = 12;
     
     @Get('/:id')
     metodo(req: Request, res: Response) {
-        res.json({teste: req.params.id});
+        res.json({teste: this.id});
     }
 }
