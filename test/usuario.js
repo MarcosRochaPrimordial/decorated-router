@@ -7,12 +7,15 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const main_1 = require("./../lib/main");
+require("reflect-metadata");
 let Usuario = class Usuario {
     constructor() {
         this.id = 12;
+        const keys = Reflect.getMetadata('restcontroller', this) || [];
+        console.log(keys);
     }
-    metodo(req, res) {
-        res.json({ teste: this.id });
+    metodo(httpServer) {
+        httpServer.res.json({ teste: this.id });
     }
 };
 __decorate([
