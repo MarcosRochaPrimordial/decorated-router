@@ -7,19 +7,15 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const main_1 = require("./../lib/main");
-require("reflect-metadata");
-let Usuario = class Usuario {
-    constructor() {
-        this.id = 12;
-    }
-    metodo(req, res) {
-        res.json({ teste: this.id, retornado: req.params.id });
+let Equipamento = class Equipamento {
+    mtod(req, res) {
+        res.json({ tes: req.params.bah });
     }
 };
 __decorate([
-    main_1.Get('/:id')
-], Usuario.prototype, "metodo", null);
-Usuario = __decorate([
-    main_1.Controller({ url: '/usuario', cors: "*" })
-], Usuario);
-exports.Usuario = Usuario;
+    main_1.Get('/:bah')
+], Equipamento.prototype, "mtod", null);
+Equipamento = __decorate([
+    main_1.Controller({ url: '/equipamento' })
+], Equipamento);
+exports.Equipamento = Equipamento;

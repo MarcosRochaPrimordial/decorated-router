@@ -1,6 +1,5 @@
 import { Server } from './server';
 import { Decorator } from './decorator';
-import { HttpServer } from './httpServer';
 
 let server = new Server();
 let decorator = new Decorator(server.initiateServer());
@@ -35,4 +34,16 @@ function Delete(path: string = "") {
     }
 }
 
-export = { Delete, Put, Post, Get, Controller, HttpServer };
+function Patch(path: string = "") {
+    return function(target: any, propertyKey: string, descriptor: TypedPropertyDescriptor<any>) {
+        decorator.Patch(path, target, propertyKey, descriptor);
+    }
+}
+
+function Options(path: string = "") {
+    return function(target: any, propertyKey: string, descriptor: TypedPropertyDescriptor<any>) {
+        decorator.Options(path, target, propertyKey, descriptor);
+    }
+}
+
+export = { Delete, Put, Post, Get, Controller, Patch, Options };
