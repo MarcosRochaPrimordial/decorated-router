@@ -1,7 +1,6 @@
 import { Controller, Get } from './../lib/main';
 import { Response, Request } from 'express';
 import { Authentication } from './Authentication';
-import "reflect-metadata";
 
 @Controller({url: '/usuario', cors: "*"})
 export class Usuario {
@@ -11,5 +10,10 @@ export class Usuario {
     @Get('/:id')
     metodo(req: Request, res: Response) {
         res.json({teste: this.id, retornado: req.params.id});
+    }
+
+    @Get()
+    getAllUsers(req: Request, res: Response) {
+        res.json([{usuarioId: 123, usuarioNome: 'açlskdfjal'}, {usuarioId: 321, usuarioNome: 'ofiasdofijasdofj'}])
     }
 }

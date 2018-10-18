@@ -1,8 +1,9 @@
 import { Server } from './server';
-import { Decorator } from './decorator';
+import { Decorators } from './decorators';
+import { Route } from './route';
 
 let server = new Server();
-let decorator = new Decorator(server.initiateServer());
+let decorator = new Decorators(new Route(server.initiateServer()));
 
 function Controller({url, auth = null, cors = null}) {
     return function (target: any) {
