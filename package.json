@@ -5,7 +5,8 @@
   "main": "lib/main.js",
   "types": "lib/main.d.ts",
   "scripts": {
-    "build": "tsc"
+    "build": "tsc",
+    "start": "cd test && tsc && node loader"
   },
   "repository": {
     "type": "git",

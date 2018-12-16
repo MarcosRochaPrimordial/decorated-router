@@ -3,7 +3,20 @@ import { Decorators } from './decorators';
 import { Route } from './route';
 
 let server = new Server();
-let decorator = new Decorators(new Route(server.initiateServer()));
+let decorator = new Decorators(new Route(server.instanceServer));
+
+function LoadApp({controllers, serverSets}) {
+    return function(target: any) {        
+        controllers.forEach(SingleController => {
+            new SingleController();
+        });
+
+        server.door = serverSets.door;
+        server.methods = serverSets.methods;
+        server.headers = serverSets.headers;
+        server.initiateServer();
+    }
+}
 
 function Controller({url, auth = null, cors = null}) {
     return function (target: any) {
@@ -47,4 +60,4 @@ function Options(path: string = "") {
     }
 }
 
-export = { Delete, Put, Post, Get, Controller, Patch, Options };
+export = { LoadApp, Delete, Put, Post, Get, Controller, Patch, Options };

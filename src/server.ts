@@ -3,22 +3,26 @@ import * as express from 'express';
 import * as bodyParser from 'body-parser';
 
 export class Server {
-    constructor() { }
+
+    public door: number;
+    public methods: string;
+    public headers: string;
+    public instanceServer: Express;
+
+    constructor() {
+        this.instanceServer = express();
+    }
 
     public initiateServer() {
-        const door = 3000 || process.argv[2];
-        const server: Express = express();
-        server.use(bodyParser.urlencoded({ extended: true }));
-        server.use(bodyParser.json());
+        this.instanceServer.use(bodyParser.urlencoded({ extended: true }));
+        this.instanceServer.use(bodyParser.json());
 
-        server.use("/", (req: Request, res: Response, next: NextFunction) => {
-            res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');
-            res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
+        this.instanceServer.use("/", (req: Request, res: Response, next: NextFunction) => {
+            res.header('Access-Control-Allow-Methods', this.methods);
+            res.header('Access-Control-Allow-Headers', this.headers);
             next();
         });
 
-        server.listen(door, () => console.log(`Now loading on door ${door}...`));
-
-        return server;
+        this.instanceServer.listen(this.door, () => console.log(`Now loading on door ${this.door}...`));
     }
 }
