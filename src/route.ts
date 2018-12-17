@@ -20,7 +20,7 @@ export class Route {
         this.server.use(url, router);
 
         if(auth !== null) {
-            this.server.use(url, auth);
+            router.use(url, auth);
         }
 
         switch(method) {
