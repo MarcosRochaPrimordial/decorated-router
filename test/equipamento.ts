@@ -1,10 +1,28 @@
-import { Request, Response } from "express";
-import { Controller, Get } from './../lib/main';
+import { Produto } from "./produto";
+import { Service } from './../lib/main';
 
-@Controller({url: '/equipamento'})
+@Service()
 export class Equipamento {
-    @Get('/:bah')
-    mtod(req: Request, res: Response) {
-        res.json({tes: req.params.bah});
+
+    private name: string
+
+    constructor(
+        private produto: Produto
+    ){}
+
+    public getProdutoId(): number {
+        return this.produto.getId();
+    }
+
+    public setProdutoId(id: number) {
+        this.produto.setId(id);
+    }
+
+    public getName(): string {
+        return this.name;
+    }
+
+    public setName(name: string) {
+        this.name = name;
     }
 }

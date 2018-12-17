@@ -2,11 +2,12 @@ import { Response, Request, NextFunction, Express, Router } from 'express';
 import * as express from 'express';
 
 export class Route {
+
     constructor(
         private server: Express
     ) {}
 
-    public route({url, auth = null, cors = null}, target: any, propertyKey: string, method: string, path: string) {
+    public route({url, auth = null, cors = null}, instance: any, propertyKey: string, method: string, path: string) {
         let router = express.Router();
 
         if(cors !== null) {
@@ -19,10 +20,8 @@ export class Route {
         this.server.use(url, router);
 
         if(auth !== null) {
-            router.use(auth);
+            this.server.use(url, auth);
         }
-
-        let instance = new target();
 
         switch(method) {
             case 'GET':

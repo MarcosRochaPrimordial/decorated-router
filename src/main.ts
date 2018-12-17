@@ -3,61 +3,63 @@ import { Decorators } from './decorators';
 import { Route } from './route';
 
 let server = new Server();
-let decorator = new Decorators(new Route(server.instanceServer));
+let decorator = new Decorators(new Route(server.getInstanceServer()));
 
-function LoadApp({controllers, serverSets}) {
-    return function(target: any) {        
-        controllers.forEach(SingleController => {
-            new SingleController();
-        });
-
-        server.door = serverSets.door;
-        server.methods = serverSets.methods;
-        server.headers = serverSets.headers;
+let LoadApp = ({controllers, serverSets}) => {
+    return (target: any) => {
+        server.setDoor(serverSets.door);
+        server.setMethods(serverSets.methods);
+        server.setHeaders(serverSets.headers);
         server.initiateServer();
     }
 }
 
-function Controller({url, auth = null, cors = null}) {
-    return function (target: any) {
+let Service = () => {
+    return (target: any) => {
+        //console.log(target);
+    }
+}
+
+let Controller = ({url, auth = null, cors = null}) => {
+    return (target: any) => {
         decorator.Controller({url, auth, cors}, target);
     }
 }
 
-function Get(path: string = "") {
-    return function (target: any, propertyKey: string, descriptor: TypedPropertyDescriptor<any>) {
+let Get = (path: string = "") => {
+    return (target: any, propertyKey: string, descriptor: TypedPropertyDescriptor<any>) => {
         decorator.Get(path, target, propertyKey, descriptor);
     }
 }
 
-function Post(path: string = "") {
-    return function (target: any, propertyKey: string, descriptor: TypedPropertyDescriptor<any>) {
+let Post = (path: string = "") => {
+    return (target: any, propertyKey: string, descriptor: TypedPropertyDescriptor<any>) => {
         decorator.Post(path, target, propertyKey, descriptor);
     }
 }
 
-function Put(path: string = "") {
-    return function (target: any, propertyKey: string, descriptor: TypedPropertyDescriptor<any>) {
+let Put = (path: string = "") => {
+    return (target: any, propertyKey: string, descriptor: TypedPropertyDescriptor<any>) => {
         decorator.Put(path, target, propertyKey, descriptor);
     }
 }
 
-function Delete(path: string = "") {
-    return function (target: any, propertyKey: string, descriptor: TypedPropertyDescriptor<any>) {
+let Delete = (path: string = "") => {
+    return (target: any, propertyKey: string, descriptor: TypedPropertyDescriptor<any>) => {
         decorator.Delete(path, target, propertyKey, descriptor);
     }
 }
 
-function Patch(path: string = "") {
-    return function(target: any, propertyKey: string, descriptor: TypedPropertyDescriptor<any>) {
+let Patch = (path: string = "") => {
+    return (target: any, propertyKey: string, descriptor: TypedPropertyDescriptor<any>) => {
         decorator.Patch(path, target, propertyKey, descriptor);
     }
 }
 
-function Options(path: string = "") {
-    return function(target: any, propertyKey: string, descriptor: TypedPropertyDescriptor<any>) {
+let Options = (path: string = "") => {
+    return (target: any, propertyKey: string, descriptor: TypedPropertyDescriptor<any>) => {
         decorator.Options(path, target, propertyKey, descriptor);
     }
 }
 
-export = { LoadApp, Delete, Put, Post, Get, Controller, Patch, Options };
+export = { LoadApp, Service, Controller, Get, Post, Put, Delete, Patch, Options };

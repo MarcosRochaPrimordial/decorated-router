@@ -9,27 +9,18 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const produto_1 = require("./produto");
 const main_1 = require("./../lib/main");
-let Equipamento = class Equipamento {
-    constructor(produto) {
-        this.produto = produto;
+let Produto = class Produto {
+    constructor() { }
+    getId() {
+        return this.id;
     }
-    getProdutoId() {
-        return this.produto.getId();
-    }
-    setProdutoId(id) {
-        this.produto.setId(id);
-    }
-    getName() {
-        return this.name;
-    }
-    setName(name) {
-        this.name = name;
+    setId(id) {
+        this.id = id;
     }
 };
-Equipamento = __decorate([
+Produto = __decorate([
     main_1.Service(),
-    __metadata("design:paramtypes", [produto_1.Produto])
-], Equipamento);
-exports.Equipamento = Equipamento;
+    __metadata("design:paramtypes", [])
+], Produto);
+exports.Produto = Produto;

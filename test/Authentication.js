@@ -9,6 +9,7 @@ function Authentication(req, res, next) {
         if (!token) {
             return res.status(403).send({ errors: ['Token não enviado.'] });
         }
+        next();
     }
 }
 exports.Authentication = Authentication;

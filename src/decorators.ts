@@ -1,5 +1,6 @@
 import { Paths } from './paths';
 import { Route } from './route';
+import { DiContainer } from './diContainer';
 
 export class Decorators {
 
@@ -7,13 +8,15 @@ export class Decorators {
         private route: Route
     ){}
 
-    public Controller({url, auth = null, cors = null}, target: Function) {
+    public Controller({url, auth = null, cors = null}, target: any) {
         const keys: Array<{path: string, method: string, key: string}> = Paths.getInstance().getObjects() || [];
+        let instance = DiContainer.resolve(target);
+        
         keys.forEach(key => { 
-            this.route.route({url, auth, cors}, target, key.key, key.method, key.path);
+            this.route.route({url, auth, cors}, instance, key.key, key.method, key.path);
         });
 
-        Paths.getInstance().renewObjects();        
+        Paths.getInstance().renewObjects();
     }
 
     public Get(path: string = "", target: any, propertyKey: string, descriptor: TypedPropertyDescriptor<any>) {

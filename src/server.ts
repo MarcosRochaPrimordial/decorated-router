@@ -4,13 +4,29 @@ import * as bodyParser from 'body-parser';
 
 export class Server {
 
-    public door: number;
-    public methods: string;
-    public headers: string;
-    public instanceServer: Express;
+    private door: number;
+    private methods: string;
+    private headers: string;
+    private instanceServer: Express;
 
     constructor() {
         this.instanceServer = express();
+    }
+
+    public setDoor(door: number) {
+        this.door = door;
+    }
+
+    public setMethods(methods: string) {
+        this.methods = methods;
+    }
+
+    public setHeaders(headers: string) {
+        this.headers = headers;
+    }
+
+    public getInstanceServer(): Express {
+        return this.instanceServer;
     }
 
     public initiateServer() {

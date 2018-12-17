@@ -2,6 +2,7 @@
     "compilerOptions": {
         "target": "es2015",
         "experimentalDecorators": true,
+        "emitDecoratorMetadata": true,
         "module": "commonjs",
         "declaration": true,
         "outDir": "./lib"
