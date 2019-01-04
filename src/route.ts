@@ -3,9 +3,19 @@ import * as express from 'express';
 
 export class Route {
 
+    private paths: Array<{path: string, method: string, key: string}>;
+
     constructor(
         private server: Express
     ) {}
+
+    public getPaths(): Array<{path: string, method: string, key: string}> {
+        return this.paths;
+    }
+
+    public setPaths(paths: Array<{path: string, method: string, key: string}>) {
+        this.paths = paths;
+    }
 
     public route({url, auth = null, cors = null}, instance: any, propertyKey: string, method: string, path: string) {
         let router = express.Router();
