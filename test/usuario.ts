@@ -1,4 +1,4 @@
-import { Controller, Get } from './../lib/main';
+import { Controller, Get, Post } from './../lib/main';
 import { Response, Request } from 'express';
 import { Equipamento } from './equipamento';
 import { Authentication } from './Authentication';
@@ -20,5 +20,10 @@ export class Usuario {
         this.equip.setName('Chave de fenda');
         this.equip.setProdutoId(12);
         res.json({equipName: this.equip.getName(), equipProdutoId: this.equip.getProdutoId()});
+    }
+
+    @Post('/blah')
+    blah(req: Request, res: Response) {
+        console.log(req.body);
     }
 }

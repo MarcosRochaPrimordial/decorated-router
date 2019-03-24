@@ -1,5 +1,6 @@
 import { Response, Request, NextFunction, Express, Router } from 'express';
 import * as express from 'express';
+import * as bodyParser from 'body-parser';
 
 export class Route {
 
@@ -27,6 +28,7 @@ export class Route {
             });
         }
 
+        this.server.use(bodyParser.json());
         this.server.use(url, router);
 
         if(auth !== null) {
