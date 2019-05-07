@@ -1,4 +1,4 @@
-import { Controller, Get, Post } from './../lib/main';
+import { Controller, Get, Post, PathVariable, RequestParam, RequestBody } from './../lib/main';
 import { Response, Request } from 'express';
 import { Equipamento } from './equipamento';
 import { Authentication } from './Authentication';
@@ -10,16 +10,14 @@ export class Usuario {
         private equip: Equipamento
     ){}
 
-    @Get()
-    getAllUsers(req: Request, res: Response) {
-        res.json([{usuarioId: 123, usuarioNome: 'açlskdfjal'}, {usuarioId: 321, usuarioNome: 'ofiasdofijasdofj'}])
+    @Get('/:to')
+    getAllUsers(@PathVariable('to') to, @RequestParam('from') from, res: Response) {
+        res.json({ to, from });
     }
 
-    @Get('/equip/blazer')
-    getUserByEquip(req: Request, res: Response) {
-        this.equip.setName('Chave de fenda');
-        this.equip.setProdutoId(12);
-        res.json({equipName: this.equip.getName(), equipProdutoId: this.equip.getProdutoId()});
+    @Post('/equip/blazer')
+    getUserByEquip(@RequestBody() body, res: Response) {
+        res.json(body);
     }
 
     @Post('/blah')

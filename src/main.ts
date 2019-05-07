@@ -62,4 +62,22 @@ let Options = (path: string = "") => {
     }
 }
 
-export = { LoadApp, Service, Controller, Get, Post, Put, Delete, Patch, Options };
+let PathVariable = (id: string) => {
+    return (target: any, propertyKey: string, parameterIndex: number) => {
+        decorator.PathVariable(id, target, propertyKey, parameterIndex);
+    }
+}
+
+let RequestParam = (id: string) => {
+    return (target: any, propertyKey: string, parameterIndex: number) => {
+        decorator.RequestParam(id, target, propertyKey, parameterIndex);
+    }
+}
+
+let RequestBody = () => {
+    return (target: any, propertyKey: string, parameterIndex: number) => {
+        decorator.RequestBody(target, propertyKey, parameterIndex);
+    }
+}
+
+export = { LoadApp, Service, Controller, Get, Post, Put, Delete, Patch, Options, PathVariable, RequestParam, RequestBody };
