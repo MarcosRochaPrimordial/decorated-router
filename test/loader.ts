@@ -1,14 +1,16 @@
 import { Usuario } from "./usuario";
 import { LoadApp } from './../lib/main';
+import { METHOD } from './../lib/main';
+import { HEADER } from "../lib/header";
 
 @LoadApp({
     controllers: [
         Usuario
     ],
-    serverSets: {
-        door: 3000,
-        methods: 'GET, POST, PUT, DELETE, PATCH, OPTIONS',
-        headers: 'Origin, X-Requested-With, Content-Type, Accept, Authorization'
+    server: {
+        port: 3000,
+        methods: `${METHOD.GET}, ${METHOD.POST}, ${METHOD.PUT}, ${METHOD.DELETE}, ${METHOD.PATCH}, ${METHOD.OPTIONS}`,
+        headers: `${HEADER.ORIGIN}, ${HEADER.XREQUESTEDWITH}, ${HEADER.CONTENTTYPE}, ${HEADER.ACCEPT}, ${HEADER.AUTHORIZATION}`
     }
 })
-class loader { }
+class loader {}

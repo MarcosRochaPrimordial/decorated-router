@@ -1,16 +1,18 @@
 import { Server } from './server';
 import { Decorators } from './decorators';
 import { Route } from './route';
+import { METHOD } from './method';
+import { HEADER } from './header';
 
-let server = new Server();
-let decorator = new Decorators(new Route(server.getInstanceServer()));
+let serverInstance = new Server();
+let decorator = new Decorators(new Route(serverInstance.getInstanceServer()));
 
-let LoadApp = ({controllers, serverSets}) => {
+let LoadApp = ({controllers, server}) => {
     return (target: any) => {
-        server.setDoor(serverSets.door);
-        server.setMethods(serverSets.methods);
-        server.setHeaders(serverSets.headers);
-        server.initiateServer();
+        serverInstance.setPort(server.port);
+        serverInstance.setMethods(server.methods);
+        serverInstance.setHeaders(server.headers);
+        serverInstance.initiateServer();
     }
 }
 
@@ -80,4 +82,4 @@ let RequestBody = () => {
     }
 }
 
-export = { LoadApp, Injectable, Controller, Get, Post, Put, Delete, Patch, Options, PathVariable, RequestParam, RequestBody };
+export = { LoadApp, Injectable, Controller, Get, Post, Put, Delete, Patch, Options, PathVariable, RequestParam, RequestBody, METHOD, HEADER };

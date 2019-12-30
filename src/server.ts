@@ -4,7 +4,7 @@ import * as bodyParser from 'body-parser';
 
 export class Server {
 
-    private door: number;
+    private port: number;
     private methods: string;
     private headers: string;
     private instanceServer: Express;
@@ -13,8 +13,8 @@ export class Server {
         this.instanceServer = express();
     }
 
-    public setDoor(door: number) {
-        this.door = door;
+    public setPort(port: number) {
+        this.port = port;
     }
 
     public setMethods(methods: string) {
@@ -39,6 +39,6 @@ export class Server {
             next();
         });
 
-        this.instanceServer.listen(this.door, () => console.log(`Now loading on door ${this.door}...`));
+        this.instanceServer.listen(this.port, () => console.log(`Now loading on port ${this.port}...`));
     }
 }

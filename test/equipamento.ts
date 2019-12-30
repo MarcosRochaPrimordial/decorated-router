@@ -1,7 +1,7 @@
 import { Produto } from "./produto";
-import { Service } from './../lib/main';
+import { Injectable } from './../lib/main';
 
-@Service()
+@Injectable()
 export class Equipamento {
 
     private name: string
