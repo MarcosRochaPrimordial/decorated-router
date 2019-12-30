@@ -1,6 +1,6 @@
-import { Service } from './../lib/main';
+import { Injectable } from './../lib/main';
 
-@Service()
+@Injectable()
 export class Produto {
     private id: number;
 

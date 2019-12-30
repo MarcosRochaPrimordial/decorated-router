@@ -14,7 +14,7 @@ let LoadApp = ({controllers, serverSets}) => {
     }
 }
 
-let Service = () => {
+let Injectable = () => {
     return (target: any) => {
         //console.log(target);
     }
@@ -80,4 +80,4 @@ let RequestBody = () => {
     }
 }
 
-export = { LoadApp, Service, Controller, Get, Post, Put, Delete, Patch, Options, PathVariable, RequestParam, RequestBody };
+export = { LoadApp, Injectable, Controller, Get, Post, Put, Delete, Patch, Options, PathVariable, RequestParam, RequestBody };

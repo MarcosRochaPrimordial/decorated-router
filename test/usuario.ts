@@ -19,9 +19,4 @@ export class Usuario {
     getUserByEquip(@RequestBody() body, res: Response) {
         res.json(body);
     }
-
-    @Post('/blah')
-    blah(req: Request, res: Response) {
-        console.log(req.body);
-    }
 }
