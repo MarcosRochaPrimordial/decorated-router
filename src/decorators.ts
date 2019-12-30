@@ -91,8 +91,7 @@ export class Decorators {
         Reflect.defineMetadata('params', parameters, target, propertyKey);
     }
 
-    public RequestBody(
-        target: any, propertyKey: string, parameterIndex: number) {
+    public RequestBody(target: any, propertyKey: string, parameterIndex: number) {
         const parameters: Array<{parameterType: string, parameterKey: string}> = Reflect.getMetadata('params', target, propertyKey) || ['value'];
         parameters.splice(parameterIndex, 0, {parameterType: 'BODY', parameterKey: ''});
         Reflect.defineMetadata('params', parameters, target, propertyKey);

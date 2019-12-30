@@ -1,7 +1,16 @@
-import { Controller, Get, Post, PathVariable, RequestParam, RequestBody } from './../lib/main';
-import { Response, Request } from 'express';
+import { Controller, Get, Post, PathVariable, RequestParam, RequestBody, DataObject } from './../lib/main';
+import { Response } from 'express';
 import { Equipamento } from './equipamento';
 import { Authentication } from './Authentication';
+
+@DataObject()
+class zoa {
+    private id: number;
+
+    public getId() {
+        return this.id;
+    }
+}
 
 @Controller({url: '/usuario', cors: "*", auth: Authentication})
 export class Usuario {
@@ -16,7 +25,7 @@ export class Usuario {
     }
 
     @Post('/equip/blazer')
-    getUserByEquip(@RequestBody() body, res: Response) {
-        res.json(body);
+    getUserByEquip(@RequestBody() body: zoa, res: Response) {
+        res.json({idsan: body.getId()})
     }
 }

@@ -18,7 +18,13 @@ let LoadApp = ({controllers, server}) => {
 
 let Injectable = () => {
     return (target: any) => {
-        //console.log(target);
+        // faz alguma validação
+    }
+}
+
+let DataObject = () => {
+    return (target: any) => {
+        // faz alguma validação
     }
 }
 
@@ -82,4 +88,4 @@ let RequestBody = () => {
     }
 }
 
-export = { LoadApp, Injectable, Controller, Get, Post, Put, Delete, Patch, Options, PathVariable, RequestParam, RequestBody, METHOD, HEADER };
+export = { LoadApp, Injectable, Controller, Get, Post, Put, Delete, Patch, Options, PathVariable, RequestParam, RequestBody, METHOD, HEADER, DataObject };

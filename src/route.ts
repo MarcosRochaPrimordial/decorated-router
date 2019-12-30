@@ -1,6 +1,7 @@
 import { Response, Request, NextFunction, Express, Router } from 'express';
 import * as express from 'express';
 import * as bodyParser from 'body-parser';
+import { DiContainer } from './diContainer';
 
 export class Route {
 
@@ -95,7 +96,7 @@ export class Route {
 
     private determinate(classInstance, key, parameters: Array<{parameterType: string, parameterKey: string}>, req, res) {
         let params = [];
-        parameters.forEach((v) => {
+        parameters.forEach((v, k) => {
             switch(v.parameterType) {
                 case 'PARAM':
                     params.push(req.query[v.parameterKey]);
@@ -104,10 +105,25 @@ export class Route {
                     params.push(req.params[v.parameterKey]);
                     break;
                 case 'BODY':
-                    params.push(req.body);
+                    const token = Reflect.getMetadata('design:paramtypes', classInstance, key)[k];
+                    if (token.name === 'Number' || token.name === 'String' || token.name === 'Bigint' || token.name === 'Boolean') {
+                        params.push(req.body);
+                        break;
+                    }
+                    const instance = DiContainer.resolve(token);
+                    params.push(this.mapper(req.body, instance));
                     break;
             }
         });
         classInstance[key](...params, res);
+    }
+
+    private mapper<T>(from: any, to: T): T {
+        Object.keys(from).forEach(fromValue => {
+            if(!!from[fromValue]) {
+                to[fromValue] = from[fromValue];
+            }
+        });
+        return to;
     }
 }
