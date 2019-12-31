@@ -5,8 +5,8 @@ import * as bodyParser from 'body-parser';
 export class Server {
 
     private port: number;
-    private methods: string;
-    private headers: string;
+    private methods: string[];
+    private headers: string[];
     private instanceServer: Express;
 
     constructor() {
@@ -17,11 +17,11 @@ export class Server {
         this.port = port;
     }
 
-    public setMethods(methods: string) {
+    public setMethods(methods: string[]) {
         this.methods = methods;
     }
 
-    public setHeaders(headers: string) {
+    public setHeaders(headers: string[]) {
         this.headers = headers;
     }
 
@@ -34,8 +34,8 @@ export class Server {
         this.instanceServer.use(bodyParser.json());
 
         this.instanceServer.use("/", (req: Request, res: Response, next: NextFunction) => {
-            res.header('Access-Control-Allow-Methods', this.methods);
-            res.header('Access-Control-Allow-Headers', this.headers);
+            res.header('Access-Control-Allow-Methods', this.methods.join(', '));
+            res.header('Access-Control-Allow-Headers', this.headers.join(', '));
             next();
         });
 
