@@ -12,20 +12,22 @@ class zoa {
     }
 }
 
-@Controller({url: '/usuario', cors: "*", auth: Authentication})
+@Controller({ url: '/usuario', cors: "*", auth: Authentication })
 export class Usuario {
 
     constructor(
         private equip: Equipamento
-    ){}
+    ) { }
 
-    @Get('/:to')
-    getAllUsers(@PathVariable('to') to, @RequestParam('from') from, res: Response) {
-        res.json({ to, from });
+    @Get('/to/:to')
+    getTo(@PathVariable('to') to) {
+        return { to };
     }
 
-    @Post('/equip/blazer')
-    getUserByEquip(@RequestBody() body: zoa, res: Response) {
-        res.json({idsan: body.getId()})
+    @Get('/from/:from')
+    getFrom(@PathVariable('from') from, res: Response) {
+        setTimeout(() => {
+            res.json({ from });
+        }, 3000);
     }
 }

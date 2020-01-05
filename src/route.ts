@@ -95,27 +95,29 @@ export class Route {
     }
 
     private determinate(classInstance, key, parameters: Array<{parameterType: string, parameterKey: string}>, req, res) {
-        let params = [];
-        parameters.forEach((v, k) => {
+        let params = this.prepareParams(classInstance, key, parameters, req);
+        const retrn = classInstance[key](...params, res);
+        if (!!retrn) {
+            res.json(retrn);
+        }
+    }
+
+    private prepareParams(classInstance, key, parameters: Array<{parameterType: string, parameterKey: string}>, req) {
+        return parameters.map((v, k) => {
             switch(v.parameterType) {
                 case 'PARAM':
-                    params.push(req.query[v.parameterKey]);
-                    break;
+                    return req.query[v.parameterKey];
                 case 'PATHVARIABLE':
-                    params.push(req.params[v.parameterKey]);
-                    break;
+                    return req.params[v.parameterKey];
                 case 'BODY':
                     const token = Reflect.getMetadata('design:paramtypes', classInstance, key)[k];
                     if (token.name === 'Number' || token.name === 'String' || token.name === 'Bigint' || token.name === 'Boolean') {
-                        params.push(req.body);
-                        break;
+                        return req.body;
                     }
                     const instance = DiContainer.resolve(token);
-                    params.push(this.mapper(req.body, instance));
-                    break;
+                    return this.mapper(req.body, instance);
             }
         });
-        classInstance[key](...params, res);
     }
 
     private mapper<T>(from: any, to: T): T {
