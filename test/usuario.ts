@@ -21,7 +21,11 @@ export class Usuario {
 
     @Get('/to/:to')
     getTo(@PathVariable('to') to) {
-        return { to };
+        return new Promise((resolve, reject) => {
+            setTimeout(() => {
+                reject({ to });
+            }, 5000);
+        })
     }
 
     @Get('/from/:from')

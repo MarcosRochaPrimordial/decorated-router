@@ -5,24 +5,24 @@ import { DiContainer } from './diContainer';
 
 export class Route {
 
-    private paths: Array<{path: string, method: string, key: string, parameters: Array<{parameterType: string, parameterKey: string}>}>;
+    private paths: Array<{ path: string, method: string, key: string, parameters: Array<{ parameterType: string, parameterKey: string }> }>;
 
     constructor(
         private server: Express
-    ) {}
+    ) { }
 
-    public getPaths(): Array<{path: string, method: string, key: string, parameters: Array<{parameterType: string, parameterKey: string}>}> {
+    public getPaths(): Array<{ path: string, method: string, key: string, parameters: Array<{ parameterType: string, parameterKey: string }> }> {
         return this.paths;
     }
 
-    public setPaths(paths: Array<{path: string, method: string, key: string, parameters: Array<{parameterType: string, parameterKey: string}>}>) {
+    public setPaths(paths: Array<{ path: string, method: string, key: string, parameters: Array<{ parameterType: string, parameterKey: string }> }>) {
         this.paths = paths;
     }
 
-    public route({url, auth = null, cors = null}, instance: any, propertyKey: string, parameters: Array<{parameterType: string, parameterKey: string}>, method: string, path: string) {
+    public route({ url, auth = null, cors = null }, instance: any, propertyKey: string, parameters: Array<{ parameterType: string, parameterKey: string }>, method: string, path: string) {
         let router = express.Router();
 
-        if(cors !== null) {
+        if (cors !== null) {
             this.server.use(url, (req: Request, res: Response, next: NextFunction) => {
                 res.header('Access-Control-Allow-Origin', cors);
                 next();
@@ -32,11 +32,11 @@ export class Route {
         this.server.use(bodyParser.json());
         this.server.use(url, router);
 
-        if(auth !== null) {
+        if (auth !== null) {
             router.use(url, auth);
         }
 
-        switch(method) {
+        switch (method) {
             case 'GET':
                 this.get(router, path, instance, propertyKey, parameters);
                 break;
@@ -58,53 +58,63 @@ export class Route {
         }
     }
 
-    private get(router: Router, path, classInstance, key, parameters: Array<{parameterType: string, parameterKey: string}>) {
+    private get(router: Router, path, classInstance, key, parameters: Array<{ parameterType: string, parameterKey: string }>) {
         router.get(path, (req: Request, res: Response) => {
             this.determinate(classInstance, key, parameters, req, res);
         });
     }
 
-    private post(router: Router, path, classInstance, key, parameters: Array<{parameterType: string, parameterKey: string}>) {
+    private post(router: Router, path, classInstance, key, parameters: Array<{ parameterType: string, parameterKey: string }>) {
         router.post(path, (req: Request, res: Response) => {
             this.determinate(classInstance, key, parameters, req, res);
         });
     }
 
-    private put(router: Router, path, classInstance, key, parameters: Array<{parameterType: string, parameterKey: string}>) {
+    private put(router: Router, path, classInstance, key, parameters: Array<{ parameterType: string, parameterKey: string }>) {
         router.put(path, (req: Request, res: Response) => {
             this.determinate(classInstance, key, parameters, req, res);
         });
     }
 
-    private delete(router: Router, path, classInstance, key, parameters: Array<{parameterType: string, parameterKey: string}>) {
+    private delete(router: Router, path, classInstance, key, parameters: Array<{ parameterType: string, parameterKey: string }>) {
         router.delete(path, (req: Request, res: Response) => {
             this.determinate(classInstance, key, parameters, req, res);
         });
     }
 
-    private patch(router: Router, path, classInstance, key, parameters: Array<{parameterType: string, parameterKey: string}>) {
+    private patch(router: Router, path, classInstance, key, parameters: Array<{ parameterType: string, parameterKey: string }>) {
         router.patch(path, (req: Request, res: Response) => {
             this.determinate(classInstance, key, parameters, req, res);
         });
     }
 
-    private options(router: Router, path, classInstance, key, parameters: Array<{parameterType: string, parameterKey: string}>) {
+    private options(router: Router, path, classInstance, key, parameters: Array<{ parameterType: string, parameterKey: string }>) {
         router.options(path, (req: Request, res: Response) => {
             this.determinate(classInstance, key, parameters, req, res);
         });
     }
 
-    private determinate(classInstance, key, parameters: Array<{parameterType: string, parameterKey: string}>, req, res) {
+    private determinate(classInstance, key, parameters: Array<{ parameterType: string, parameterKey: string }>, req, res) {
         let params = this.prepareParams(classInstance, key, parameters, req);
         const retrn = classInstance[key](...params, res);
         if (!!retrn) {
-            res.json(retrn);
+            if (!!retrn.then) {
+                retrn
+                    .then((result: any) => {
+                        res.json(result);
+                    })
+                    .catch((err: any) => {
+                        res.status(500).send(err);
+                    });
+            } else {
+                res.json(retrn);
+            }
         }
     }
 
-    private prepareParams(classInstance, key, parameters: Array<{parameterType: string, parameterKey: string}>, req) {
+    private prepareParams(classInstance, key, parameters: Array<{ parameterType: string, parameterKey: string }>, req) {
         return parameters.map((v, k) => {
-            switch(v.parameterType) {
+            switch (v.parameterType) {
                 case 'PARAM':
                     return req.query[v.parameterKey];
                 case 'PATHVARIABLE':
@@ -122,7 +132,7 @@ export class Route {
 
     private mapper<T>(from: any, to: T): T {
         Object.keys(from).forEach(fromValue => {
-            if(!!from[fromValue]) {
+            if (!!from[fromValue]) {
                 to[fromValue] = from[fromValue];
             }
         });
