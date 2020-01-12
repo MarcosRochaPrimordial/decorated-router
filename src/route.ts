@@ -31,9 +31,8 @@ export class Route {
 
         this.server.use(bodyParser.json());
         this.server.use(url, router);
-
         if (auth !== null) {
-            router.use(url, auth);
+            router.use(auth);
         }
 
         switch (method) {

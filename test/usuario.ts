@@ -22,9 +22,7 @@ export class Usuario {
     @Get('/to/:to')
     getTo(@PathVariable('to') to) {
         return new Promise((resolve, reject) => {
-            setTimeout(() => {
-                reject({ to });
-            }, 5000);
+            resolve({ to });
         })
     }
 
