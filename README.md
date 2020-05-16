@@ -14,9 +14,9 @@ npm install decorated-router
 ## Loader (index) file
 
 ```typescript
-import { LoadApp, METHOD, HEADER } from 'decorated-router';
+import { App, METHOD, HEADER } from 'decorated-router';
 
-@LoadApp({
+@App({
     controllers: [
         Controller
     ],
@@ -32,7 +32,7 @@ class loader {}
 ## Controllers
 
 ```typescript
-import { Controller, Get, Delete, Post, Put, PathVariable, RequestParam, RequestBody } from 'decorated-router';
+import { Controller, Get, Delete, Post, Put, Path, Query, Body } from 'decorated-router';
 import { Response } from 'express';
 
 @Controller({
@@ -47,26 +47,26 @@ export class Controller {
     ) { }
 
     @Get('/to/:to')
-    getTo(@PathVariable('to') to) {
+    getTo(@Path('to') to) {
         return new Promise((resolve, reject) => {
             resolve({ to });
         })
     }
 
     @Delete('/from') // ?from=someValue
-    delete(@RequestParam('from') from, res: Response) {
+    delete(@Query('from') from, res: Response) {
         setTimeout(() => {
             res.json({ from });
         }, 1000);
     }
 
     @Post('/when')
-    post(@RequestBody() someDto: SomeDTO) {
+    post(@Body() someDto: SomeDTO) {
         return { start: someDto.getStart() };
     }
 
     @Put('/where')
-    put(@RequestBody() someDto: SomeDTO) {
+    put(@Body() someDto: SomeDTO) {
         return this._someInjectedService.doThings(someDto.getEnd());
     }
 }
@@ -78,7 +78,7 @@ export class Controller {
 import { DataObject } from 'decorated-router';
 
 @DataObject()
-class SomeDTO {
+export class SomeDTO {
     private start: number;
     private end: number;
 

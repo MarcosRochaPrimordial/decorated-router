@@ -1,9 +1,9 @@
 import { Usuario } from "./usuario";
-import { LoadApp } from './../lib/main';
+import { App } from './../lib/main';
 import { METHOD } from './../lib/main';
 import { HEADER } from "../lib/header";
 
-@LoadApp({
+@App({
     controllers: [
         Usuario
     ],

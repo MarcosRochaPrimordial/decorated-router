@@ -7,7 +7,7 @@ import { HEADER } from './header';
 let serverInstance = new Server();
 let decorator = new Decorators(new Route(serverInstance.getInstanceServer()));
 
-let LoadApp = ({controllers, server}) => {
+let App = ({controllers, server}) => {
     return (target: any) => {
         serverInstance.setPort(server.port);
         serverInstance.setMethods(server.methods);
@@ -18,13 +18,13 @@ let LoadApp = ({controllers, server}) => {
 
 let Injectable = () => {
     return (target: any) => {
-        // faz alguma validação
+        // do some validation
     }
 }
 
 let DataObject = () => {
     return (target: any) => {
-        // faz alguma validação
+        // do some validation
     }
 }
 
@@ -70,22 +70,22 @@ let Options = (path: string = "") => {
     }
 }
 
-let PathVariable = (id: string) => {
+let Path = (id: string) => {
     return (target: any, propertyKey: string, parameterIndex: number) => {
         decorator.PathVariable(id, target, propertyKey, parameterIndex);
     }
 }
 
-let RequestParam = (id: string) => {
+let Query = (id: string) => {
     return (target: any, propertyKey: string, parameterIndex: number) => {
         decorator.RequestParam(id, target, propertyKey, parameterIndex);
     }
 }
 
-let RequestBody = () => {
+let Body = () => {
     return (target: any, propertyKey: string, parameterIndex: number) => {
         decorator.RequestBody(target, propertyKey, parameterIndex);
     }
 }
 
-export = { LoadApp, Injectable, Controller, Get, Post, Put, Delete, Patch, Options, PathVariable, RequestParam, RequestBody, METHOD, HEADER, DataObject };
+export = { App, Injectable, Controller, Get, Post, Put, Delete, Patch, Options, Path, Query, Body, METHOD, HEADER, DataObject };

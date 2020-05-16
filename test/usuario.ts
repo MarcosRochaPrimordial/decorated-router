@@ -1,4 +1,4 @@
-import { Controller, Get, Post, PathVariable, RequestParam, RequestBody, DataObject } from './../lib/main';
+import { Controller, Get, Post, Path, Query, Body, DataObject } from './../lib/main';
 import { Response } from 'express';
 import { Equipamento } from './equipamento';
 import { Authentication } from './Authentication';
@@ -6,13 +6,26 @@ import { Authentication } from './Authentication';
 @DataObject()
 class zoa {
     private id: number;
+    private name: string;
 
-    public getId() {
+    public getId(): number {
         return this.id;
+    }
+
+    public setId(id: number) {
+        this.id = id;
+    }
+
+    public getName() {
+        return this.name;
+    }
+
+    public setName(name: string) {
+        this.name = name;
     }
 }
 
-@Controller({ url: '/usuario', cors: "*", auth: Authentication })
+@Controller({ url: '/usuario', cors: "*" })
 export class Usuario {
 
     constructor(
@@ -20,16 +33,19 @@ export class Usuario {
     ) { }
 
     @Get('/to/:to')
-    getTo(@PathVariable('to') to) {
+    getTo(@Path('to') to: number, @Query('e') e: string, @Query('c') c: number, @Query('b') b: string) {
         return new Promise((resolve, reject) => {
             resolve({ to });
-        })
+        });
     }
 
-    @Get('/from/:from')
-    getFrom(@PathVariable('from') from, res: Response) {
-        setTimeout(() => {
-            res.json({ from });
-        }, 3000);
+    @Get('/from')
+    getFrom(@Query('from') from: boolean, res: Response) {
+        res.json({ to: 2012, from });
+    }
+
+    @Post('/test')
+    getTest(@Body() zoa: zoa) {
+        return zoa;
     }
 }

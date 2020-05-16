@@ -2,24 +2,15 @@ import { Response, Request, NextFunction, Express, Router } from 'express';
 import * as express from 'express';
 import * as bodyParser from 'body-parser';
 import { DiContainer } from './diContainer';
+import { Path, Parameter } from './Path';
 
 export class Route {
-
-    private paths: Array<{ path: string, method: string, key: string, parameters: Array<{ parameterType: string, parameterKey: string }> }>;
 
     constructor(
         private server: Express
     ) { }
 
-    public getPaths(): Array<{ path: string, method: string, key: string, parameters: Array<{ parameterType: string, parameterKey: string }> }> {
-        return this.paths;
-    }
-
-    public setPaths(paths: Array<{ path: string, method: string, key: string, parameters: Array<{ parameterType: string, parameterKey: string }> }>) {
-        this.paths = paths;
-    }
-
-    public route({ url, auth = null, cors = null }, instance: any, propertyKey: string, parameters: Array<{ parameterType: string, parameterKey: string }>, method: string, path: string) {
+    public route({ url, auth = null, cors = null }, instance: any, propertyKey: string, parameters: Parameter[], method: string, path: string) {
         let router = express.Router();
 
         if (cors !== null) {
@@ -57,43 +48,43 @@ export class Route {
         }
     }
 
-    private get(router: Router, path, classInstance, key, parameters: Array<{ parameterType: string, parameterKey: string }>) {
+    private get(router: Router, path, classInstance, key, parameters: Parameter[]) {
         router.get(path, (req: Request, res: Response) => {
             this.determinate(classInstance, key, parameters, req, res);
         });
     }
 
-    private post(router: Router, path, classInstance, key, parameters: Array<{ parameterType: string, parameterKey: string }>) {
+    private post(router: Router, path, classInstance, key, parameters: Parameter[]) {
         router.post(path, (req: Request, res: Response) => {
             this.determinate(classInstance, key, parameters, req, res);
         });
     }
 
-    private put(router: Router, path, classInstance, key, parameters: Array<{ parameterType: string, parameterKey: string }>) {
+    private put(router: Router, path, classInstance, key, parameters: Parameter[]) {
         router.put(path, (req: Request, res: Response) => {
             this.determinate(classInstance, key, parameters, req, res);
         });
     }
 
-    private delete(router: Router, path, classInstance, key, parameters: Array<{ parameterType: string, parameterKey: string }>) {
+    private delete(router: Router, path, classInstance, key, parameters: Parameter[]) {
         router.delete(path, (req: Request, res: Response) => {
             this.determinate(classInstance, key, parameters, req, res);
         });
     }
 
-    private patch(router: Router, path, classInstance, key, parameters: Array<{ parameterType: string, parameterKey: string }>) {
+    private patch(router: Router, path, classInstance, key, parameters: Parameter[]) {
         router.patch(path, (req: Request, res: Response) => {
             this.determinate(classInstance, key, parameters, req, res);
         });
     }
 
-    private options(router: Router, path, classInstance, key, parameters: Array<{ parameterType: string, parameterKey: string }>) {
+    private options(router: Router, path, classInstance, key, parameters: Parameter[]) {
         router.options(path, (req: Request, res: Response) => {
             this.determinate(classInstance, key, parameters, req, res);
         });
     }
 
-    private determinate(classInstance, key, parameters: Array<{ parameterType: string, parameterKey: string }>, req, res) {
+    private determinate(classInstance, key, parameters: Parameter[], req, res) {
         let params = this.prepareParams(classInstance, key, parameters, req);
         const retrn = classInstance[key](...params, res);
         if (!!retrn) {
@@ -111,15 +102,15 @@ export class Route {
         }
     }
 
-    private prepareParams(classInstance, key, parameters: Array<{ parameterType: string, parameterKey: string }>, req) {
+    private prepareParams(classInstance, key, parameters: Parameter[], req) {
         return parameters.map((v, k) => {
+            const token = Reflect.getMetadata('design:paramtypes', classInstance, key)[k];
             switch (v.parameterType) {
                 case 'PARAM':
-                    return req.query[v.parameterKey];
+                    return this.convertToTypes(req.query[v.parameterKey], token.name);
                 case 'PATHVARIABLE':
-                    return req.params[v.parameterKey];
+                    return this.convertToTypes(req.params[v.parameterKey], token.name);
                 case 'BODY':
-                    const token = Reflect.getMetadata('design:paramtypes', classInstance, key)[k];
                     if (token.name === 'Number' || token.name === 'String' || token.name === 'Bigint' || token.name === 'Boolean') {
                         return req.body;
                     }
@@ -136,5 +127,16 @@ export class Route {
             }
         });
         return to;
+    }
+
+    private convertToTypes(parameter: string, type: string) {
+        switch (type) {
+            case 'Number':
+                return Number(parameter);
+            case 'Boolean':
+                return Boolean(JSON.parse(parameter));
+            default:
+                return parameter;
+        }
     }
 }

@@ -1,5 +1,6 @@
 import { Route } from './route';
 import { DiContainer } from './diContainer';
+import { Path, Parameter } from './Path';
 
 export class Decorators {
 
@@ -8,92 +9,84 @@ export class Decorators {
     ){}
 
     public Controller({url, auth = null, cors = null}, target: any) {
-        const keys: Array<{path: string, method: string, key: string, parameters: Array<{parameterType: string, parameterKey: string}>}> = this.route.getPaths() || [];
         let instance = DiContainer.resolve(target);
+        const keys: Path[] = Reflect.getMetadata('paths', instance);
         
         keys.forEach(key => {
-            key.parameters.splice(1, 1);
-            this.route.route({url, auth, cors}, instance, key.key, key.parameters, key.method, key.path);
+            const parameters: Parameter[] = Reflect.getMetadata('params', instance, key.key) || [];
+            this.route.route({url, auth, cors}, instance, key.key, parameters.reverse(), key.method, key.path);
         });
-
-        this.route.setPaths([]);
     }
 
     public Get(path: string = "", target: any, propertyKey: string, descriptor: TypedPropertyDescriptor<any>) {
-        const keys: Array<{path: string, method: string, key: string, parameters: Array<{parameterType: string, parameterKey: string}>}> = this.route.getPaths() || [];
-        const parameters: Array<{parameterType: string, parameterKey: string}> = Reflect.getMetadata('params', target, propertyKey) || [];
-        keys.push({path, method: 'GET', key: propertyKey, parameters});
+        const keys: Path[] = Reflect.getMetadata('paths', target) || [];
+        keys.push({path, method: 'GET', key: propertyKey});
 
-        this.route.setPaths(keys);
+        Reflect.defineMetadata('paths', keys, target);
 
         return descriptor.value;
     }
 
     public Post(path: string = "", target: any, propertyKey: string, descriptor: TypedPropertyDescriptor<any>) {
-        const keys: Array<{path: string, method: string, key: string, parameters: Array<{parameterType: string, parameterKey: string}>}> = this.route.getPaths() || [];
-        const parameters: Array<{parameterType: string, parameterKey: string}> = Reflect.getMetadata('params', target, propertyKey) || [];
-        keys.push({path, method: 'POST', key: propertyKey, parameters});
+        const keys: Path[] = Reflect.getMetadata('paths', target) || [];
+        keys.push({path, method: 'POST', key: propertyKey});
 
-        this.route.setPaths(keys);
+        Reflect.defineMetadata('paths', keys, target);
 
         return descriptor.value;
     }
 
     public Put(path: string = "", target: any, propertyKey: string, descriptor: TypedPropertyDescriptor<any>) {
-        const keys: Array<{path: string, method: string, key: string, parameters: Array<{parameterType: string, parameterKey: string}>}> = this.route.getPaths() || [];
-        const parameters: Array<{parameterType: string, parameterKey: string}> = Reflect.getMetadata('params', target, propertyKey) || [];
-        keys.push({path, method: 'PUT', key: propertyKey, parameters});
+        const keys: Path[] = Reflect.getMetadata('paths', target) || [];
+        keys.push({path, method: 'PUT', key: propertyKey});
 
-        this.route.setPaths(keys);
+        Reflect.defineMetadata('paths', keys, target);
 
         return descriptor.value;
     }
 
     public Delete(path: string = "", target: any, propertyKey: string, descriptor: TypedPropertyDescriptor<any>) {
-        const keys: Array<{path: string, method: string, key: string, parameters: Array<{parameterType: string, parameterKey: string}>}> = this.route.getPaths() || [];
-        const parameters: Array<{parameterType: string, parameterKey: string}> = Reflect.getMetadata('params', target, propertyKey) || [];
-        keys.push({path, method: 'DELETE', key: propertyKey, parameters});
+        const keys: Path[] = Reflect.getMetadata('paths', target) || [];
+        keys.push({path, method: 'DELETE', key: propertyKey});
 
-        this.route.setPaths(keys);
+        Reflect.defineMetadata('paths', keys, target);
 
         return descriptor.value;
     }
 
     public Patch(path: string = "", target: any, propertyKey: string, descriptor: TypedPropertyDescriptor<any>) {
-        const keys: Array<{path: string, method: string, key: string, parameters: Array<{parameterType: string, parameterKey: string}>}> = this.route.getPaths() || [];
-        const parameters: Array<{parameterType: string, parameterKey: string}> = Reflect.getMetadata('params', target, propertyKey) || [];
-        keys.push({path, method: 'PATCH', key: propertyKey, parameters});
+        const keys: Path[] = Reflect.getMetadata('paths', target) || [];
+        keys.push({path, method: 'PATCH', key: propertyKey});
 
-        this.route.setPaths(keys);
+        Reflect.defineMetadata('paths', keys, target);
 
         return descriptor.value;
     }
 
     public Options(path: string = "", target: any, propertyKey: string, descriptor: TypedPropertyDescriptor<any>) {
-        const keys: Array<{path: string, method: string, key: string, parameters: Array<{parameterType: string, parameterKey: string}>}> = this.route.getPaths() || [];
-        const parameters: Array<{parameterType: string, parameterKey: string}> = Reflect.getMetadata('params', target, propertyKey) || [];
-        keys.push({path, method: 'OPTIONS', key: propertyKey, parameters});
+        const keys: Path[] = Reflect.getMetadata('paths', target) || [];
+        keys.push({path, method: 'OPTIONS', key: propertyKey});
 
-        this.route.setPaths(keys);
+        Reflect.defineMetadata('paths', keys, target);
 
         return descriptor.value;
     }
 
     public PathVariable(id: string, target: any, propertyKey: string, parameterIndex: number) {
-        const parameters: Array<{parameterType: string, parameterKey: string}> = Reflect.getMetadata('params', target, propertyKey) || ['value'];
-        parameters.splice(parameterIndex, 0, {parameterType: 'PATHVARIABLE', parameterKey: id});
+        const parameters: Parameter[] = Reflect.getMetadata('params', target, propertyKey) || [];
+        parameters.push({parameterType: 'PATHVARIABLE', parameterKey: id});
         Reflect.defineMetadata('params', parameters, target, propertyKey);
     }
 
     public RequestParam(id: string, target: any, propertyKey: string, parameterIndex: number) {
-        const parameters: Array<{parameterType: string, parameterKey: string}> = Reflect.getMetadata('params', target, propertyKey) || ['value'];
-        parameters.splice(parameterIndex, 0, {parameterType: 'PARAM', parameterKey: id});
+        const parameters: Parameter[] = Reflect.getMetadata('params', target, propertyKey) || [];
+        parameters.push({parameterType: 'PARAM', parameterKey: id});
         Reflect.defineMetadata('params', parameters, target, propertyKey);
     }
 
     public RequestBody(target: any, propertyKey: string, parameterIndex: number) {
-        const parameters: Array<{parameterType: string, parameterKey: string}> = Reflect.getMetadata('params', target, propertyKey) || ['value'];
-        parameters.splice(parameterIndex, 0, {parameterType: 'BODY', parameterKey: ''});
+        const parameters: Parameter[] = Reflect.getMetadata('params', target, propertyKey) || [];
+        parameters.push({parameterType: 'BODY', parameterKey: ''});
         Reflect.defineMetadata('params', parameters, target, propertyKey);
     }
 }
