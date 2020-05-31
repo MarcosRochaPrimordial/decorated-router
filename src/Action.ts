@@ -1,7 +1,7 @@
-export interface Path {
+export interface Action {
     path: string;
     method: string;
-    key: string;
+    action: string;
 }
 
 export interface Parameter {

@@ -36,55 +36,55 @@ let Controller = ({url, auth = null, cors = null}) => {
 
 let Get = (path: string = "") => {
     return (target: any, propertyKey: string, descriptor: TypedPropertyDescriptor<any>) => {
-        decorator.Get(path, target, propertyKey, descriptor);
+        decorator.defineActionRequestType(path, target, propertyKey, descriptor, 'get');
     }
 }
 
 let Post = (path: string = "") => {
     return (target: any, propertyKey: string, descriptor: TypedPropertyDescriptor<any>) => {
-        decorator.Post(path, target, propertyKey, descriptor);
+        decorator.defineActionRequestType(path, target, propertyKey, descriptor, 'post');
     }
 }
 
 let Put = (path: string = "") => {
     return (target: any, propertyKey: string, descriptor: TypedPropertyDescriptor<any>) => {
-        decorator.Put(path, target, propertyKey, descriptor);
+        decorator.defineActionRequestType(path, target, propertyKey, descriptor, 'put');
     }
 }
 
 let Delete = (path: string = "") => {
     return (target: any, propertyKey: string, descriptor: TypedPropertyDescriptor<any>) => {
-        decorator.Delete(path, target, propertyKey, descriptor);
+        decorator.defineActionRequestType(path, target, propertyKey, descriptor, 'delete');
     }
 }
 
 let Patch = (path: string = "") => {
     return (target: any, propertyKey: string, descriptor: TypedPropertyDescriptor<any>) => {
-        decorator.Patch(path, target, propertyKey, descriptor);
+        decorator.defineActionRequestType(path, target, propertyKey, descriptor, 'patch');
     }
 }
 
 let Options = (path: string = "") => {
     return (target: any, propertyKey: string, descriptor: TypedPropertyDescriptor<any>) => {
-        decorator.Options(path, target, propertyKey, descriptor);
+        decorator.defineActionRequestType(path, target, propertyKey, descriptor, 'options');
     }
 }
 
 let Path = (id: string) => {
     return (target: any, propertyKey: string, parameterIndex: number) => {
-        decorator.PathVariable(id, target, propertyKey, parameterIndex);
+        decorator.defineActionParameters(id, target, propertyKey, 'PATHVARIABLE');
     }
 }
 
 let Query = (id: string) => {
     return (target: any, propertyKey: string, parameterIndex: number) => {
-        decorator.RequestParam(id, target, propertyKey, parameterIndex);
+        decorator.defineActionParameters(id, target, propertyKey, 'PARAM');
     }
 }
 
 let Body = () => {
     return (target: any, propertyKey: string, parameterIndex: number) => {
-        decorator.RequestBody(target, propertyKey, parameterIndex);
+        decorator.defineActionParameters(null, target, propertyKey, 'BODY');
     }
 }
 

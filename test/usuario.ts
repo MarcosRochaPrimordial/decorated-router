@@ -33,9 +33,9 @@ export class Usuario {
     ) { }
 
     @Get('/to/:to')
-    getTo(@Path('to') to: number, @Query('e') e: string, @Query('c') c: number, @Query('b') b: string) {
+    getTo(@Path('to') to: number, @Query('e') e: string, @Query('c') c: number, @Query('b') b: number) {
         return new Promise((resolve, reject) => {
-            resolve({ to });
+            resolve({ to, e, c, b });
         });
     }
 
@@ -45,7 +45,7 @@ export class Usuario {
     }
 
     @Post('/test')
-    getTest(@Body() zoa: zoa) {
+    getTest(@Body() zoa: zoa, @Query('a') a: string) {
         return zoa;
     }
 }
