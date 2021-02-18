@@ -1,16 +1,16 @@
 import { Usuario } from "./usuario";
 import { App } from './../lib/main';
-import { METHOD } from './../lib/main';
-import { HEADER } from "../lib/header";
+import { Login } from "./login";
 
 @App({
     controllers: [
-        Usuario
+        Usuario,
+        Login
     ],
     server: {
-        port: 3000,
-        methods: [METHOD.GET, METHOD.POST, METHOD.PUT, METHOD.DELETE, METHOD.PATCH, METHOD.OPTIONS],
-        headers: [HEADER.ORIGIN, HEADER.XREQUESTEDWITH, HEADER.CONTENTTYPE, HEADER.ACCEPT, HEADER.AUTHORIZATION]
+        port: 3300,
+        methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+        headers: ['Origin', 'X-Requested-With', 'Content-Type', 'Accept', 'Authorization']
     }
 })
 class loader {}

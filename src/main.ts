@@ -1,11 +1,9 @@
 import { Server } from './server';
 import { Decorators } from './decorators';
 import { Route } from './route';
-import { METHOD } from './method';
-import { HEADER } from './header';
 
 let serverInstance = new Server();
-let decorator = new Decorators(new Route(serverInstance.getInstanceServer()));
+let decorator = new Decorators(new Route(serverInstance));
 
 let App = ({controllers, server}) => {
     return (target: any) => {
@@ -88,4 +86,4 @@ let Body = () => {
     }
 }
 
-export = { App, Injectable, Controller, Get, Post, Put, Delete, Patch, Options, Path, Query, Body, METHOD, HEADER, DataObject };
+export = { App, Injectable, Controller, Get, Post, Put, Delete, Patch, Options, Path, Query, Body, DataObject };

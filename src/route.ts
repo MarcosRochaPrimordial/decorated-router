@@ -1,26 +1,31 @@
-import { Response, Request, NextFunction, Express, Router } from 'express';
+import { Response, Request, NextFunction, Express } from 'express';
 import * as express from 'express';
-import * as bodyParser from 'body-parser';
 import { DiContainer } from './diContainer';
 import { Parameter } from './Action';
+import { Server } from './server';
 
 export class Route {
 
+    private server: Express;
+
     constructor(
-        private server: Express
-    ) { }
+        private instanceServer: Server
+    ) {
+        this.server = this.instanceServer.getInstanceServer();
+    }
 
     public route({ url, auth = null, cors = null }, instance: any, propertyKey: string, parameters: Parameter[], method: string, path: string) {
         let router = express.Router();
 
-        if (cors !== null) {
-            this.server.use(url, (req: Request, res: Response, next: NextFunction) => {
+        this.server.use(express.json());
+        this.server.use(url, (req: Request, res: Response, next: NextFunction) => {
+            if (cors !== null) {
                 res.header('Access-Control-Allow-Origin', cors);
-                next();
-            });
-        }
-
-        this.server.use(bodyParser.json());
+            }
+            res.header('Access-Control-Allow-Methods', this.instanceServer.getMethods().join(', '));
+            res.header('Access-Control-Allow-Headers', this.instanceServer.getHeaders().join(', '));
+            next();
+        });
         this.server.use(url, router);
         if (auth !== null) {
             router.use(auth);

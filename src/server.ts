@@ -1,6 +1,5 @@
 import { Response, Request, NextFunction, Express } from 'express';
 import * as express from 'express';
-import * as bodyParser from 'body-parser';
 
 export class Server {
 
@@ -21,8 +20,16 @@ export class Server {
         this.methods = methods;
     }
 
+    public getMethods(): string[] {
+        return this.methods;
+    }
+
     public setHeaders(headers: string[]) {
         this.headers = headers;
+    }
+
+    public getHeaders(): string[] {
+        return this.headers;
     }
 
     public getInstanceServer(): Express {
@@ -30,15 +37,6 @@ export class Server {
     }
 
     public initiateServer() {
-        this.instanceServer.use(bodyParser.urlencoded({ extended: true }));
-        this.instanceServer.use(bodyParser.json());
-
-        this.instanceServer.use("/", (req: Request, res: Response, next: NextFunction) => {
-            res.header('Access-Control-Allow-Methods', this.methods.join(', '));
-            res.header('Access-Control-Allow-Headers', this.headers.join(', '));
-            next();
-        });
-
         this.instanceServer.listen(this.port, () => console.log(`Now loading on port ${this.port}...`));
     }
 }
