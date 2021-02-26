@@ -69,9 +69,9 @@ export class Route {
     private convertToTypes(parameter: string, type: string) {
         switch (type) {
             case 'Number':
-                return Number(parameter);
+                return !!parameter ? Number(parameter) : null;
             case 'Boolean':
-                return Boolean(JSON.parse(parameter));
+                return !!parameter ? Boolean(JSON.parse(parameter)) : false;
             default:
                 return parameter;
         }
